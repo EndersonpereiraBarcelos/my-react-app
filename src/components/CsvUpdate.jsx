@@ -5,8 +5,8 @@ const CsvUpdate = () => {
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
-  const endpoint = "https://script.google.com/macros/s/AKfycbwSwlJATYl9L0GHOwNrGzRnhRsrNbaZedUd0lLGujwiF4noP8xHP8dUH9SrfVh7fAi0Sw/exec";
-
+  // const endpoint = "https://script.google.com/macros/s/AKfycbwSwlJATYl9L0GHOwNrGzRnhRsrNbaZedUd0lLGujwiF4noP8xHP8dUH9SrfVh7fAi0Sw/exec";
+const endpoint = "https://script.google.com/macros/s/AKfycbxl3vJCyPH_VUfg-Tls3ySsmclMZaR9mYOjeAhq3WuLvtt71FLk-ZuuXcAzsc9jLscQuQ/exec"
   const handleSubmit = (e) => {
     e.preventDefault();
     handleCsvUpload();
