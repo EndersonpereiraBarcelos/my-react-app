@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from './Header';
 
 const Status = () => {
@@ -18,7 +19,7 @@ const Status = () => {
     manutencao: 0
   });
 
-  const endpoint = "https://script.google.com/macros/s/AKfycbwSwlJATYl9L0GHOwNrGzRnhRsrNbaZedUd0lLGujwiF4noP8xHP8dUH9SrfVh7fAi0Sw/exec";
+  const endpoint = "https://script.google.com/macros/s/AKfycbxC4G1NbRhIHxF_lJx8qjX73A3nKTWGVOJ-tlrr6VDyyH5wGhOSMm-q3wWMgNpxZVEr/exec";
 
   useEffect(() => {
     carregarEquipamentos();
@@ -126,10 +127,19 @@ const Status = () => {
                 <div className="text-sm" style={{ color: 'var(--gray-600)' }}>Última atualização</div>
                 <div className="font-medium">{ultimaAtualizacao || 'Carregando...'}</div>
               </div>
-              <button onClick={carregarEquipamentos} className="form-button" disabled={refreshLoading}>
-                <span style={{ display: refreshLoading ? 'none' : 'inline' }}>Atualizar</span>
-                <div className="loading-spinner" style={{ display: refreshLoading ? 'inline-block' : 'none' }}></div>
-              </button>
+              <div className="flex gap-3">
+                <Link to="/entrada" className="form-button" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Editar Dados
+                </Link>
+                <button onClick={carregarEquipamentos} className="form-button" disabled={refreshLoading}>
+                  <span style={{ display: refreshLoading ? 'none' : 'inline' }}>Atualizar</span>
+                  <div className="loading-spinner" style={{ display: refreshLoading ? 'inline-block' : 'none' }}></div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -216,13 +226,36 @@ const Status = () => {
           </div>
         ) : (
           <div className="equipamentos-grid">
-            {equipamentosFiltrados.map((equip, index) => (
-              <div key={index} className="equipamento-card fade-in">
+            {equipamentosFiltrados.map((equip, index) => {
+              // Função para determinar a cor do semáforo baseada no status
+              const getSemaforoColor = (status) => {
+                switch(status) {
+                  case 'OPE': return '#10b981'; // Verde
+                  case 'ST-BY': return '#f59e0b'; // Amarelo
+                  case 'MNT': return '#ef4444'; // Vermelho
+                  default: return '#6b7280'; // Cinza
+                }
+              };
+
+              const getSemaforoIcon = (status) => {
+                switch(status) {
+                  case 'OPE': return '🟢';
+                  case 'ST-BY': return '🟡';
+                  case 'MNT': return '🔴';
+                  default: return '⚪';
+                }
+              };
+
+              return (
+              <div key={index} className="equipamento-card fade-in" style={{ borderLeft: `4px solid ${getSemaforoColor(equip.STATUS)}` }}>
                 <div className="equipamento-header">
                   <div className="equipamento-nome">{equip.TAG || "N/A"}</div>
-                  <span className={`status-badge ${(equip.STATUS || "").toLowerCase().replace("-", "")}`}>
-                    {equip.STATUS || "N/A"}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px' }}>{getSemaforoIcon(equip.STATUS)}</span>
+                    <span className={`status-badge ${(equip.STATUS || "").toLowerCase().replace("-", "")}`} style={{ backgroundColor: getSemaforoColor(equip.STATUS) }}>
+                      {equip.STATUS || "N/A"}
+                    </span>
+                  </div>
                 </div>
                 <div className="equipamento-detalhes">
                   {equip.MOTIVO && (
@@ -245,7 +278,7 @@ const Status = () => {
                   )}
                   {equip.RETORNO && (
                     <div className="equipamento-detail">
-                      <span className="detail-label">Retorno:</span>
+                      <span className="detail-label">Previsão para retorno:</span>
                       <span className="detail-value">{new Date(equip.RETORNO).toLocaleString("pt-BR")}</span>
                     </div>
                   )}
@@ -267,7 +300,8 @@ const Status = () => {
                   {equip.DATA && ` • ${new Date(equip.DATA).toLocaleString("pt-BR")}`}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

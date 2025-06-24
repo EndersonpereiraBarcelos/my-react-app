@@ -27,7 +27,7 @@ const Login = () => {
       if (loginValue === "admin" && senha === "admin") {
         setMensagem("Login realizado com sucesso!");
         setTimeout(() => {
-          navigate('/entrada');
+          navigate('/status');
         }, 1000);
       } else if (loginValue === "operador" && senha === "operador") {
         setMensagem("Login realizado com sucesso!");
